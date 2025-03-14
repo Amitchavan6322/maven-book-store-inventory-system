@@ -36,7 +36,7 @@ public class CustomerService implements CustomerServiceInterface{
 
         System.out.println("Enter customer Email ID");
         String emailID = scanner.nextLine();
-        customer.setEmailID(emailID);
+        customer.setCustomerEmailID(emailID);
 
         customers.put(customerId, customer);
     }

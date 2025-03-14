@@ -5,12 +5,14 @@ import com.amit.book.inventory.model.Book;
 import com.amit.book.inventory.model.BookCategory;
 import com.amit.book.inventory.exception.InvalidBookNameException;
 import com.amit.book.inventory.exception.InvalidBookIDException;
+import lombok.Data;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+
 
 public class BookService extends LibraryService implements BookServiceInterface {
 
