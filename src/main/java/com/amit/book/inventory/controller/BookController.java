@@ -5,6 +5,7 @@ import com.amit.book.inventory.exception.InvalidBookNameException;
 import com.amit.book.inventory.exception.InvalidBookPriceException;
 import com.amit.book.inventory.service.BookService;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class BookController {
@@ -31,6 +32,8 @@ public class BookController {
                         System.err.println(invalidBookIDException.getMessage());
                     } catch (InvalidBookPriceException invalidBookPriceException) {
                         System.err.println(invalidBookPriceException.getMessage());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
                     }
 
                 case 2:

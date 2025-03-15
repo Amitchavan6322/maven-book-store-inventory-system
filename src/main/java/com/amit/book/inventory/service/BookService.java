@@ -5,8 +5,10 @@ import com.amit.book.inventory.model.Book;
 import com.amit.book.inventory.model.BookCategory;
 import com.amit.book.inventory.exception.InvalidBookNameException;
 import com.amit.book.inventory.exception.InvalidBookIDException;
+import com.amit.book.inventory.repository.BookRepository;
 import lombok.Data;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +21,9 @@ public class BookService extends LibraryService implements BookServiceInterface 
     private HashMap<Integer, Book> books = new HashMap<>();
     private Scanner scanner = new Scanner(System.in);
 
-    public void acceptingBookInfo() throws InvalidBookIDException, InvalidBookNameException, InvalidBookPriceException {
+    private static final BookRepository bookRepository = new BookRepository();
+
+    public void acceptingBookInfo() throws InvalidBookIDException, InvalidBookNameException, InvalidBookPriceException, SQLException {
 
         if (isBookCollectionEmpty()) {
             System.out.println("No books currently in the inventory.");
@@ -30,7 +34,7 @@ public class BookService extends LibraryService implements BookServiceInterface 
         int bookId;
         try {
             bookId = Integer.parseInt(scanner.nextLine());
-            // book.setBookID(bookId);
+            book.setBookId(bookId);
         } catch (NumberFormatException e) {
             //System.out.println("Invalid input, please provide a valid numeric ID.");
             //return;
@@ -89,7 +93,9 @@ public class BookService extends LibraryService implements BookServiceInterface 
             throw new InvalidBookPriceException("Invalid book price please provide valid id");
         }
         //System.out.println("Book to be added: " + book);
-        books.put(bookId, book);
+        //books.put(bookId, book);
+        boolean isBookAdded = bookRepository.fillTheBookInfo(book);
+        System.out.println(isBookAdded ? "Book entry added in DB" : "Failed to add book entry in DB");
     }
 
         /*public void displayBookInfo () {
