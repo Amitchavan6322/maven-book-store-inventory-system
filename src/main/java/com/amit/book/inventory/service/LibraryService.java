@@ -2,6 +2,8 @@ package com.amit.book.inventory.service;
 
 import com.amit.book.inventory.model.Book;
 import com.amit.book.inventory.exception.InvalidBookIDException;
+
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +22,7 @@ public abstract class LibraryService {
         books.forEach((id, book) -> System.out.println("Book ID: " + id + " = Book Info: " + book));
     }
 
-    public Book getBookById(int bookId) throws InvalidBookIDException {
+    public Book getBookById(int bookId) throws InvalidBookIDException, SQLException {
         if (!books.containsKey(bookId)) {
             throw new InvalidBookIDException("Book ID not found");
         }

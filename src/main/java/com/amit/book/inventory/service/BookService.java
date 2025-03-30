@@ -6,12 +6,10 @@ import com.amit.book.inventory.model.BookCategory;
 import com.amit.book.inventory.exception.InvalidBookNameException;
 import com.amit.book.inventory.exception.InvalidBookIDException;
 import com.amit.book.inventory.repository.BookRepository;
-import lombok.Data;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -26,7 +24,8 @@ public class BookService extends LibraryService implements BookServiceInterface 
     public void acceptingBookInfo() throws InvalidBookIDException, InvalidBookNameException, InvalidBookPriceException, SQLException {
 
         if (isBookCollectionEmpty()) {
-            System.out.println("No books currently in the inventory.");
+            boolean value = bookRepository.isTableEmpty();
+            if (value) System.out.println("No books currently in the inventory.");
         }
 
         Book book = new Book();
@@ -98,33 +97,16 @@ public class BookService extends LibraryService implements BookServiceInterface 
         System.out.println(isBookAdded ? "Book entry added in DB" : "Failed to add book entry in DB");
     }
 
-        /*public void displayBookInfo () {
-            System.out.println("inside display book info map size = " +books.size());
 
-            // old for each loop
-            *//*for (Map.Entry<Integer, Book> set : books.entrySet()) {
-                System.out.println("Book ID: " + set.getKey() + " = Book Info: " + set.getValue());
-            }*//*
-
-            // java8 feature forEach loop
-            books.forEach((id, book) -> System.out.println("Book ID: " + id + " = Book Info: " + book));
-        }*/
-
-    // using stream api
-    public void displayBookInfo() {
-        books.entrySet().stream().parallel()
-                //.filter(entry -> entry.getValue().getPrice()>200)
-                .forEach(entry -> System.out.println("Book ID: " + entry.getKey() + " = Book Info: " + entry.getValue()));
+    public void displayBookInfo() throws SQLException {
+        bookRepository.displayTheBookInfo();
     }
 
     // method to retrieve book by id
-    public Book getBookById(int bookId) {
-        if (books.containsKey(bookId)) {
-            return books.get(bookId);
-        } else {
-            System.out.println("Book ID " + bookId + " not found.");
-            return null;
-        }
+    public Book getBookById(int book_Id) throws SQLException {
+
+        bookRepository.getBookById(book_Id);
+        return null;
     }
 
     // Method to remove a book by ID

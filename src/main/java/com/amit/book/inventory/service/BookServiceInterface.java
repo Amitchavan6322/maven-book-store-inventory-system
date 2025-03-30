@@ -9,8 +9,8 @@ import java.sql.SQLException;
 
 public interface BookServiceInterface {
     void acceptingBookInfo() throws InvalidBookIDException, InvalidBookNameException, InvalidBookPriceException, SQLException;
-    void displayBookInfo();
-    Book getBookById(int bookId);
+    void displayBookInfo() throws SQLException;
+    Book getBookById(int bookId) throws SQLException;
     void removeBookById(int bookId);
     void updateBookPrice(int bookId, int newPrice);
 }
