@@ -1,17 +1,15 @@
 package com.amit.book.inventory.service;
 
+import com.amit.book.inventory.exception.InvalidBookIDException;
+import com.amit.book.inventory.exception.InvalidBookNameException;
 import com.amit.book.inventory.exception.InvalidBookPriceException;
 import com.amit.book.inventory.model.Book;
 import com.amit.book.inventory.model.BookCategory;
-import com.amit.book.inventory.exception.InvalidBookNameException;
-import com.amit.book.inventory.exception.InvalidBookIDException;
 import com.amit.book.inventory.repository.BookRepository;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 
 public class BookService extends LibraryService implements BookServiceInterface {
@@ -23,7 +21,7 @@ public class BookService extends LibraryService implements BookServiceInterface 
 
     public void acceptingBookInfo() throws InvalidBookIDException, InvalidBookNameException, InvalidBookPriceException, SQLException {
 
-        if (isBookCollectionEmpty()) {
+        if (isBookTableEmpty()) {
             boolean value = bookRepository.isTableEmpty();
             if (value) System.out.println("No books currently in the inventory.");
         }
@@ -104,7 +102,6 @@ public class BookService extends LibraryService implements BookServiceInterface 
 
     // method to retrieve book by id
     public Book getBookById(int book_Id) throws SQLException {
-
         bookRepository.getBookById(book_Id);
         return null;
     }
@@ -119,60 +116,83 @@ public class BookService extends LibraryService implements BookServiceInterface 
         }
     }
 
-    // Method to update a book's price
+    @Override
     public void updateBookPrice(int bookId, int newPrice) {
-        if (books.containsKey(bookId)) {
-            Book book = books.get(bookId);
-            book.setPrice(newPrice);
-            books.put(bookId, book); // Update the map with the new price
-            System.out.println("Book ID " + bookId + " updated with new price.");
-        } else {
-            System.out.println("Book ID " + bookId + " not found.");
+
+    }
+
+    public void updateBookInfo(int book_Id) throws InvalidBookNameException, SQLException, InvalidBookIDException, InvalidBookPriceException {
+        Book book = new Book();
+        book.setBookId(book_Id);
+
+        System.out.println("Enter new book name (leave empty to keep the existing value as is)");
+        String name = scanner.nextLine();
+        if (!name.isEmpty()) {
+            book.setName(name);
         }
+
+        System.out.println("Enter new book author (leave empty to keep the existing value as is)");
+        String author = scanner.nextLine();
+        if (!author.isEmpty()) {
+            book.setAuthor(author);
+        }
+
+        System.out.println("Enter new book publisher (leave empty to keep the existing value as is)");
+        String publisher = scanner.nextLine();
+        if (!publisher.isEmpty()) {
+            book.setPublisher(publisher);
+        }
+
+        System.out.println("Enter new no of book copies (leave empty to keep the existing value as is)");
+        String copiesInput = scanner.nextLine();
+        if (!copiesInput.isEmpty()) {
+            try {
+                int noOfCopies = Integer.parseInt(copiesInput);
+                book.setNoOfCopies(noOfCopies);
+            } catch (NumberFormatException e) {
+                throw new InvalidBookIDException("Please provide the number of copies in a valid format.");
+            }
+        }
+
+        System.out.println("Enter new book category (leave empty to keep the existing value as is)");
+        String categoryInput = scanner.nextLine();
+        if (!categoryInput.isEmpty()) {
+            try {
+                BookCategory category = BookCategory.valueOf(categoryInput.toUpperCase());
+                book.setCategory(category);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid category. Please enter a valid category.");
+                return;
+            }
+        }
+
+        System.out.println("Enter new store location (leave empty to keep the existing value as is)");
+        String storeLocation = scanner.nextLine();
+        if (!storeLocation.isEmpty()) {
+            book.setStoreLocation(storeLocation);
+        }
+
+        System.out.println("Enter new book price (leave empty to keep the existing value as is)");
+        String priceInput = scanner.nextLine();
+        if (!priceInput.isEmpty()) {
+            try {
+                int price = Integer.parseInt(priceInput);
+                book.setPrice(price);
+            } catch (NumberFormatException e) {
+                throw new InvalidBookPriceException("Invalid book price. Please provide a valid price.");
+            }
+        }
+        boolean isUpdated = bookRepository.updateBookInfo(book);
+        System.out.println(isUpdated ? "Book info updated successfully." : "Failed to update book info.");
     }
 
     // Method to check if the collection is empty
-    public boolean isBookCollectionEmpty() {
+    public boolean isBookTableEmpty() {
         return books.isEmpty();
     }
 
-    // Method to clear the book collection
-    public void clearBookCollection() {
-        books.clear();
-        System.out.println("All books have been removed.");
-    }
-
-    // Retrieve books by author using Stream API
-    public List<Book> getBooksByAuthor(String author) {
-        return books.values().stream()
-                .filter(book -> book.getAuthor().equalsIgnoreCase(author))
-                .collect(Collectors.toList());
-    }
-
-    // Retrieve books by category using Stream API
-    public List<Book> getBooksByCategory(BookCategory category) {
-        return books.values().stream()
-                .filter(book -> book.getCategory() == category)
-                .collect(Collectors.toList());
-    }
-
-    // Sort books by price using Stream API
-    public List<Book> getBooksSortedByPrice() {
-        return books.values().stream()
-                .sorted((book1, book2) -> Integer.compare(book1.getPrice(), book2.getPrice()))
-                .collect(Collectors.toList());
-    }
-
-    // Remove books below a price using Stream API
-    public void removeBooksBelowPrice(int priceThreshold) {
-        books.entrySet().removeIf(entry -> entry.getValue().getPrice() < priceThreshold);
-    }
-
-    // Count books in a category using Stream API
-    public long countBooksInCategory(BookCategory category) {
-        return books.values().stream()
-                .filter(book -> book.getCategory() == category)
-                .count();
+    public boolean isBookExist(int bookId) throws SQLException {
+        return bookRepository.isBookExists(bookId);
     }
 }
 

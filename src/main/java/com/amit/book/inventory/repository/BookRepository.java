@@ -1,5 +1,8 @@
 package com.amit.book.inventory.repository;
 
+import com.amit.book.inventory.exception.InvalidBookIDException;
+import com.amit.book.inventory.exception.InvalidBookNameException;
+import com.amit.book.inventory.exception.InvalidBookPriceException;
 import com.amit.book.inventory.model.Book;
 import com.amit.book.inventory.service.ConnectionService;
 
@@ -136,6 +139,44 @@ public class BookRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean updateBookInfo(Book book) throws InvalidBookIDException, InvalidBookNameException, InvalidBookPriceException, SQLException {
+
+        String query = "UPDATE book SET book_name = ?, author = ?, publisher = ?, no_of_copies = ?, category = ?, store_location = ?, price = ? WHERE book_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, book.getName());
+            preparedStatement.setString(2, book.getAuthor());
+            preparedStatement.setString(3, book.getPublisher());
+            preparedStatement.setInt(4, book.getNoOfCopies());
+            preparedStatement.setString(5, String.valueOf(book.getCategory()));
+            preparedStatement.setString(6, book.getStoreLocation());
+            preparedStatement.setInt(7, book.getPrice());
+            preparedStatement.setInt(8, book.getBookId());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0; // Returns true if update was successful
+        }
+    }
+/*        // Check if the book exists before updating
+        if (!this.isBookExists(book_Id)) {
+            System.out.println("No book found with the given ID.");
+            return;
+        }
+    }*/
+
+    public boolean isBookExists(int bookId) throws SQLException {
+        this.initConnection();
+        String query = "SELECT COUNT(*) FROM book WHERE book_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, bookId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) > 0; // Returns true if book exists
+                }
+            }
+        }
+        return false;
     }
 }
 

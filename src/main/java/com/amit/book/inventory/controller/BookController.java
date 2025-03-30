@@ -12,7 +12,7 @@ public class BookController {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-    public void run() throws SQLException {
+    public void run() throws SQLException, InvalidBookNameException, InvalidBookIDException, InvalidBookPriceException {
         int option = 0;
         BookService bookService = new BookService();
         do {
@@ -20,6 +20,7 @@ public class BookController {
             System.out.println("1. Fill the book information");
             System.out.println("2. Display book information");
             System.out.println("3. Get book by id");
+            System.out.println("4. Update the book information");
             System.out.println("9: Go back to main menu");
             option = Integer.parseInt(scanner.nextLine());
 
@@ -44,6 +45,17 @@ public class BookController {
                     System.out.println("Enter book id");
                     int bookId = Integer.parseInt(scanner.nextLine());
                     bookService.getBookById(bookId);
+                    break;
+
+                case 4:
+                    try {
+                        System.out.println("Enter the ID of the book you want to update:");
+                        int book_Id = Integer.parseInt(scanner.nextLine());
+                        boolean bookExists = bookService.isBookExist(book_Id);
+                        if (bookExists) bookService.updateBookInfo(book_Id);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a valid numeric ID.");
+                    }
                     break;
             }
 
