@@ -1,7 +1,9 @@
 package com.amit.book.inventory.service;
 
+import java.sql.SQLException;
+
 public interface SupplierServiceInterface {
 
-    void acceptingSupplierInfo();
-    void displaySupplierInfo();
+    void acceptingSupplierInfo() throws SQLException;
+    void displaySupplierInfo() throws SQLException;
 }

@@ -14,17 +14,15 @@ import java.util.Scanner;
 
 public class BookService extends LibraryService implements BookServiceInterface {
 
-    private HashMap<Integer, Book> books = new HashMap<>();
     private Scanner scanner = new Scanner(System.in);
 
     private static final BookRepository bookRepository = new BookRepository();
 
     public void acceptingBookInfo() throws InvalidBookIDException, InvalidBookNameException, InvalidBookPriceException, SQLException {
 
-        if (isBookTableEmpty()) {
-            boolean value = bookRepository.isTableEmpty();
+
+            boolean value = bookRepository.isBookTableEmpty();
             if (value) System.out.println("No books currently in the inventory.");
-        }
 
         Book book = new Book();
         System.out.println("Enter book id");
@@ -106,44 +104,36 @@ public class BookService extends LibraryService implements BookServiceInterface 
         return null;
     }
 
+
     // Method to remove a book by ID
-    public void removeBookById(int bookId) {
-        if (books.containsKey(bookId)) {
-            books.remove(bookId);
-            System.out.println("Book ID " + bookId + " removed.");
-        } else {
-            System.out.println("Book ID " + bookId + " not found.");
-        }
+    public void deleteBookById(int bookId) throws SQLException {
+        bookRepository.deleteBookById(bookId);
     }
 
-    @Override
-    public void updateBookPrice(int bookId, int newPrice) {
-
-    }
 
     public void updateBookInfo(int book_Id) throws InvalidBookNameException, SQLException, InvalidBookIDException, InvalidBookPriceException {
         Book book = new Book();
         book.setBookId(book_Id);
 
-        System.out.println("Enter new book name (leave empty to keep the existing value as is)");
+        System.out.println("Enter new book name");
         String name = scanner.nextLine();
         if (!name.isEmpty()) {
             book.setName(name);
         }
 
-        System.out.println("Enter new book author (leave empty to keep the existing value as is)");
+        System.out.println("Enter new book author");
         String author = scanner.nextLine();
         if (!author.isEmpty()) {
             book.setAuthor(author);
         }
 
-        System.out.println("Enter new book publisher (leave empty to keep the existing value as is)");
+        System.out.println("Enter new book publisher");
         String publisher = scanner.nextLine();
         if (!publisher.isEmpty()) {
             book.setPublisher(publisher);
         }
 
-        System.out.println("Enter new no of book copies (leave empty to keep the existing value as is)");
+        System.out.println("Enter new no of book copies");
         String copiesInput = scanner.nextLine();
         if (!copiesInput.isEmpty()) {
             try {
@@ -154,7 +144,7 @@ public class BookService extends LibraryService implements BookServiceInterface 
             }
         }
 
-        System.out.println("Enter new book category (leave empty to keep the existing value as is)");
+        System.out.println("Enter new book category");
         String categoryInput = scanner.nextLine();
         if (!categoryInput.isEmpty()) {
             try {
@@ -166,13 +156,13 @@ public class BookService extends LibraryService implements BookServiceInterface 
             }
         }
 
-        System.out.println("Enter new store location (leave empty to keep the existing value as is)");
+        System.out.println("Enter new store location");
         String storeLocation = scanner.nextLine();
         if (!storeLocation.isEmpty()) {
             book.setStoreLocation(storeLocation);
         }
 
-        System.out.println("Enter new book price (leave empty to keep the existing value as is)");
+        System.out.println("Enter new book price");
         String priceInput = scanner.nextLine();
         if (!priceInput.isEmpty()) {
             try {
@@ -186,10 +176,6 @@ public class BookService extends LibraryService implements BookServiceInterface 
         System.out.println(isUpdated ? "Book info updated successfully." : "Failed to update book info.");
     }
 
-    // Method to check if the collection is empty
-    public boolean isBookTableEmpty() {
-        return books.isEmpty();
-    }
 
     public boolean isBookExist(int bookId) throws SQLException {
         return bookRepository.isBookExists(bookId);

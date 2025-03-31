@@ -21,6 +21,7 @@ public class BookController {
             System.out.println("2. Display book information");
             System.out.println("3. Get book by id");
             System.out.println("4. Update the book information");
+            System.out.println("5. Delete the book information");
             System.out.println("9: Go back to main menu");
             option = Integer.parseInt(scanner.nextLine());
 
@@ -54,9 +55,21 @@ public class BookController {
                         boolean bookExists = bookService.isBookExist(book_Id);
                         if (bookExists) bookService.updateBookInfo(book_Id);
                     } catch (NumberFormatException e) {
-                        System.out.println("Invalid input. Please enter a valid numeric ID.");
+                        System.out.println("Invalid input. Please enter a valid book ID.");
                     }
                     break;
+
+                case 5:
+                    try {
+                        System.out.println("Enter the ID of the book you want to delete:");
+                        int book_Id = Integer.parseInt(scanner.nextLine());
+                        boolean bookExists = bookService.isBookExist(book_Id);
+                        if (bookExists) bookService.deleteBookById(book_Id);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a valid book ID.");
+                    }
+                    break;
+
             }
 
         }

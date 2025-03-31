@@ -40,7 +40,6 @@ public class BookStoreInventorySystem {
                     supplierController.run();
                     break;
             }
-
         }
         while (option != 0);
         System.out.println("THANK YOU!");

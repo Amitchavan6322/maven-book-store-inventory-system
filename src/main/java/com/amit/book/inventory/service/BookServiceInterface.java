@@ -11,6 +11,6 @@ public interface BookServiceInterface {
     void acceptingBookInfo() throws InvalidBookIDException, InvalidBookNameException, InvalidBookPriceException, SQLException;
     void displayBookInfo() throws SQLException;
     Book getBookById(int bookId) throws SQLException;
-    void removeBookById(int bookId);
-    void updateBookPrice(int bookId, int newPrice);
+    void deleteBookById(int bookId) throws SQLException;
+
 }

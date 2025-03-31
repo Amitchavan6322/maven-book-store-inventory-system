@@ -1,8 +1,14 @@
 package com.amit.book.inventory.service;
 
+import com.amit.book.inventory.exception.InvalidBookIDException;
+import com.amit.book.inventory.exception.InvalidBookNameException;
+import com.amit.book.inventory.exception.InvalidBookPriceException;
 import com.amit.book.inventory.model.Customer;
 import com.amit.book.inventory.model.Supplier;
+import com.amit.book.inventory.repository.CustomerRepository;
+import com.amit.book.inventory.repository.SupplierRepository;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -10,16 +16,17 @@ import java.util.Scanner;
 
 public class SupplierService implements SupplierServiceInterface {
 
-    private HashMap<Integer, Supplier> suppliers = new HashMap<>();
     private Scanner scanner = new Scanner(System.in);
 
-    public void acceptingSupplierInfo(){
+    private static final SupplierRepository supplierRepository = new SupplierRepository();
+
+    public void acceptingSupplierInfo() throws SQLException {
 
         Supplier supplier = new Supplier();
 
         System.out.println("Enter supplier id");
         int supplierId = Integer.parseInt(scanner.nextLine());
-        //supplier.setSupplierID(supplierId);
+        supplier.setSupplierID(supplierId);
 
         System.out.println("Enter supplier name");
         String name = scanner.nextLine();
@@ -37,19 +44,57 @@ public class SupplierService implements SupplierServiceInterface {
         String emailID = scanner.nextLine();
         supplier.setSupplierEmailId(emailID);
 
-        suppliers.put(supplierId, supplier);
+        boolean isSupplierAdded = supplierRepository.fillSupplierInfo(supplier);
+        System.out.println(isSupplierAdded ? "Supplier entry added in DB" : "Failed to add customer entry in DB");
     }
 
-    public void displaySupplierInfo(){
+    public void displaySupplierInfo() throws SQLException {
+        supplierRepository.displaySupplierInfo();
+    }
 
-        // old for each loop
-        /*for(Map.Entry<Integer, Supplier>set : suppliers.entrySet()){
-            System.out.println("Supplier ID : " +set.getKey() + " = " + "Supplier Info : "
-                    + set.getValue());
-        }*/
+    public void getSupplierById(int supplier_Id) throws SQLException {
+        supplierRepository.getSupplierById(supplier_Id);
+    }
 
-        // java8 feature forEach loop
-        suppliers.forEach((supplierID, supplier) -> System.out.println("Supplier ID: " + supplierID + " = Supplier Info: " + supplier));
+    public void deleteSupplierById(int supplierId) throws SQLException {
+        supplierRepository.deleteSupplierById(supplierId);
+    }
+
+    public boolean isSupplierExist(int supplierId) throws SQLException {
+        return supplierRepository.isSupplierExists(supplierId);
+    }
+
+    public void updateSupplierInfo(int supplier_Id) throws InvalidBookNameException, SQLException, InvalidBookIDException, InvalidBookPriceException {
+        Supplier supplier = new Supplier();
+        supplier.setSupplierID(supplier_Id);
+
+        System.out.println("Enter new supplier name");
+        String name = scanner.nextLine();
+        if (!name.isEmpty()) {
+            supplier.setSupplierName(name);
+        }
+
+        System.out.println("Enter new supplier address");
+        String address = scanner.nextLine();
+        if (!address.isEmpty()) {
+            supplier.setSupplierAddress(address);
+        }
+
+        System.out.println("Enter new supplier contact");
+        long contact = 0L;
+        contact = Long.parseLong(scanner.nextLine());
+        if (!(contact == 0L)) {
+            supplier.setSupplierContact(contact);
+        }
+
+        System.out.println("Enter new supplier email address");
+        String emailId = scanner.nextLine();
+        if (!emailId.isEmpty()) {
+            supplier.setSupplierEmailId(emailId);
+        }
+
+        boolean isUpdated = supplierRepository.updateSupplierInfo(supplier);
+        System.out.println(isUpdated ? "Supplier info updated successfully." : "Failed to update supplier info.");
     }
 
 }

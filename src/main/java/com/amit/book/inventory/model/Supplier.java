@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Supplier {
 
-    //private int supplierID;
+    private int supplierID;
     private String supplierName;
     private String supplierAddress;
     private Long supplierContact;

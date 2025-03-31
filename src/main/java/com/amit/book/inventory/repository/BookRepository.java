@@ -125,7 +125,27 @@ public class BookRepository {
         }
     }
 
-    public boolean isTableEmpty() throws SQLException {
+
+    public void deleteBookById(int book_id) throws SQLException {
+        this.initConnection();
+        String query = "DELETE FROM book where book_id = ?";
+        System.out.println("query inside deleteBookById = " + query);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, book_id); // Set the parameter for book_id
+            int affectedRows = preparedStatement.executeUpdate(); // Use executeUpdate for DELETE
+            if (affectedRows > 0) {
+                System.out.println("Book entry for id = " + book_id + " has been deleted successfully");
+            } else {
+                System.out.println("No book entry found with id = " + book_id);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (connection != null) connection.close(); // Ensure connection is closed
+        }
+    }
+
+    public boolean isBookTableEmpty() throws SQLException {
         this.initConnection();
         String query = "SELECT COUNT(*) FROM book";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -141,7 +161,7 @@ public class BookRepository {
         }
     }
 
-    public boolean updateBookInfo(Book book) throws InvalidBookIDException, InvalidBookNameException, InvalidBookPriceException, SQLException {
+    public boolean updateBookInfo(Book book) throws SQLException {
 
         String query = "UPDATE book SET book_name = ?, author = ?, publisher = ?, no_of_copies = ?, category = ?, store_location = ?, price = ? WHERE book_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -158,12 +178,6 @@ public class BookRepository {
             return rowsAffected > 0; // Returns true if update was successful
         }
     }
-/*        // Check if the book exists before updating
-        if (!this.isBookExists(book_Id)) {
-            System.out.println("No book found with the given ID.");
-            return;
-        }
-    }*/
 
     public boolean isBookExists(int bookId) throws SQLException {
         this.initConnection();
