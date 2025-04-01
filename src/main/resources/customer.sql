@@ -1,14 +1,15 @@
 USE stepupdb;
 
-CREATE TABLE customer (
-    customerID INT PRIMARY KEY,
-    customerName VARCHAR(120) NOT NULL,
-    customerAddress VARCHAR(255),
-    customerContact BIGINT,
-    customerEmailID VARCHAR(120)
+CREATE TABLE IF NOT EXISTS customer (
+    customer_id INT,
+    customer_name VARCHAR(120) NOT NULL,
+    customer_address VARCHAR(255),
+    customer_contact BIGINT,
+    customer_email_id VARCHAR(120),
+    CONSTRAINT PRIMARY KEY pkey_customer(customer_id)
 );
 
-INSERT INTO customer (customerID, customerName, customerAddress, customerContact, customerEmailID) VALUES
+INSERT INTO customer (customer_id, customer_name, customer_address, customer_contact, customer_email_id) VALUES
 (1, 'John Doe', '123 Elm St, Springfield', 9876543210, 'johndoe@gmail.com'),
 (2, 'Jane Smith', '456 Oak St, Metropolis', 9876543211, 'janesmith@yahoo.com'),
 (3, 'Paul Walker', '789 Maple Ave, Gotham', 9876543212, 'paulw@gmail.com'),

@@ -4,15 +4,16 @@ CREATE DATABASE stepupdb;
 USE stepupdb;
 
 -- Creating the 'book' table
-CREATE TABLE book (
-    book_id INT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS book (
+    book_id INT,
     book_name VARCHAR(120) NOT NULL,
     author VARCHAR(120),
     publisher VARCHAR(120),
     no_of_copies INT,
     category VARCHAR(20),
     store_location VARCHAR(120),
-    price INT
+    price INT,
+    CONSTRAINT PRIMARY KEY pkey_book(book_id)
 );
 
 -- DML (delete, update, insert, select)
